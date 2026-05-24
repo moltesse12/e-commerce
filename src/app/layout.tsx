@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "E-commerce Afrique",
-  description: "Vêtements et chaussures adaptés à votre morphologie",
+  title: "MORPHO — Vêtements adaptés à votre morphologie",
+  description: "Vêtements et chaussures taillés pour les morphologies africaines",
 };
 
 export default function RootLayout({
@@ -13,7 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body>{children}</body>
+      <body className="min-h-screen bg-surface">
+        <Header />
+        <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
+        <Footer />
+      </body>
     </html>
   );
 }
