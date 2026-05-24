@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import type { Product, ProductVariant, Review } from "@/lib/types";
+import { createClient } from "@/lib/supabase/server";
+import { findBestSize } from "@/lib/matching";
+import type { Product, ProductVariant } from "@/lib/types";
+import { AddToCartButton } from "./add-to-cart-button";
 
 async function getProduct(slug: string) {
   const { data: product } = await supabase
@@ -8,7 +11,7 @@ async function getProduct(slug: string) {
     .select("*, category:categories(*)")
     .eq("slug", slug)
     .single();
-  return product as Product | null;
+  return product as (Product & { category: { slug: string } | null }) | null;
 }
 
 async function getVariants(productId: string) {
@@ -20,13 +23,19 @@ async function getVariants(productId: string) {
   return (data as ProductVariant[]) ?? [];
 }
 
-async function getReviews(productId: string) {
-  const { data } = await supabase
-    .from("reviews")
+async function getUserMeasurements() {
+  const supabaseServer = await createClient();
+  const { data: { user } } = await supabaseServer.auth.getUser();
+  if (!user) return null;
+
+  const { data } = await supabaseServer
+    .from("user_measurements")
     .select("*")
-    .eq("product_id", productId)
-    .order("created_at", { ascending: false });
-  return (data as Review[]) ?? [];
+    .eq("user_id", user.id)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  return data;
 }
 
 export default async function ProductPage({
@@ -38,9 +47,16 @@ export default async function ProductPage({
   const product = await getProduct(slug);
   if (!product) notFound();
 
-  const [variants] = await Promise.all([
+  const [variants, measurements] = await Promise.all([
     getVariants(product.id),
+    getUserMeasurements(),
   ]);
+
+  const match = measurements
+    ? findBestSize(measurements, variants, product.category?.slug ?? "")
+    : null;
+
+  const inStock = variants.filter((v) => v.stock > 0);
 
   return (
     <div className="grid gap-12 md:grid-cols-2">
@@ -59,28 +75,55 @@ export default async function ProductPage({
           <p className="text-gray-600">{product.description}</p>
         )}
 
-        {variants.length > 0 && (
-          <div>
-            <h3 className="text-sm font-medium text-gray-700">Tailles disponibles</h3>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {variants.map((v) => (
-                <span
-                  key={v.id}
-                  className="rounded-md border border-border px-4 py-2 text-sm"
-                >
-                  {v.size_label}
-                  {v.stock === 0 && (
-                    <span className="ml-2 text-xs text-red-500">Rupture</span>
-                  )}
-                </span>
-              ))}
-            </div>
+        {match && (
+          <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+            <p className="text-sm font-semibold text-green-800">
+              Taille recommandée : {match.sizeLabel}
+            </p>
+            <p className="mt-1 text-xs text-green-600">
+              Confiance : {match.confidence === "high" ? "élevée" : match.confidence === "medium" ? "moyenne" : "faible"}
+            </p>
           </div>
         )}
 
-        <button className="w-full rounded-lg bg-accent px-6 py-3 font-semibold text-white">
-          Ajouter au panier
-        </button>
+        <AddToCartButton
+          variants={variants}
+          productId={product.id}
+          productName={product.name}
+          price={product.base_price}
+        />
+
+        <div className="rounded-lg border border-border bg-white p-4">
+          <h3 className="text-sm font-semibold text-primary">Guide des tailles</h3>
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full text-left text-xs text-gray-600">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="pb-2 pr-4 font-medium">Taille</th>
+                  <th className="pb-2 pr-4 font-medium">Poitrine</th>
+                  <th className="pb-2 pr-4 font-medium">Taille</th>
+                  <th className="pb-2 font-medium">Stock</th>
+                </tr>
+              </thead>
+              <tbody>
+                {variants.map((v) => (
+                  <tr key={v.id} className="border-b border-border last:border-0">
+                    <td className="py-2 pr-4">{v.size_label}</td>
+                    <td className="py-2 pr-4">{v.chest_cm ?? "—"} cm</td>
+                    <td className="py-2 pr-4">{v.waist_cm ?? "—"} cm</td>
+                    <td className="py-2">
+                      {v.stock > 0 ? (
+                        v.stock
+                      ) : (
+                        <span className="text-red-500">Rupture</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );
