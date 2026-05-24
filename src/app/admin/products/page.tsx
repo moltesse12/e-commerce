@@ -26,7 +26,8 @@ export default async function AdminProductsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-primary">Produits</h1>
       </div>
-      <table className="w-full text-left text-sm">
+      <div className="overflow-x-auto">
+      <table className="w-full text-left text-sm" role="table">
         <thead>
           <tr className="border-b border-border">
             <th className="pb-3 pr-4 font-medium">Nom</th>
@@ -39,13 +40,14 @@ export default async function AdminProductsPage() {
           {products?.map((p) => (
             <tr key={p.id} className="border-b border-border">
               <td className="py-3 pr-4">{p.name}</td>
-              <td className="py-3 pr-4 text-gray-500">{p.category?.name}</td>
+              <td className="py-3 pr-4 text-text-muted">{p.category?.name}</td>
               <td className="py-3 pr-4">{p.base_price.toLocaleString()} FCFA</td>
               <td className="py-3">{p.is_active ? "✓" : "✗"}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

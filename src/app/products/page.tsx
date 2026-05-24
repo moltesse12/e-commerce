@@ -24,14 +24,14 @@ export default async function ProductsPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-primary">Catalogue</h1>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-text-muted">
           {products.length} produit{products.length !== 1 ? "s" : ""}
         </p>
       </div>
       {products.length === 0 ? (
-        <p className="text-gray-500">Aucun produit pour le moment. Revenez bientôt.</p>
+        <p className="text-text-muted">Aucun produit pour le moment. Revenez bientôt.</p>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {products.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

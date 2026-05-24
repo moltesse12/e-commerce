@@ -4,7 +4,7 @@ export default function CheckoutCancelPage() {
   return (
     <div className="py-20 text-center">
       <h1 className="text-2xl font-bold text-primary">Paiement annulé</h1>
-      <p className="mt-2 text-gray-600">
+      <p className="mt-2 text-text">
         Le paiement a été annulé. Votre panier est toujours disponible.
       </p>
       <Link

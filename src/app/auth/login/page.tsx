@@ -4,23 +4,27 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { Spinner } from "@/components/Spinner";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setLoading(true);
 
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
+    setLoading(false);
     if (error) {
       setError(error.message);
     } else {
@@ -35,7 +39,7 @@ export default function LoginPage() {
 
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Email</label>
+          <label className="block text-sm font-medium text-text">Email</label>
           <input
             type="email"
             value={email}
@@ -46,7 +50,7 @@ export default function LoginPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Mot de passe</label>
+          <label className="block text-sm font-medium text-text">Mot de passe</label>
           <input
             type="password"
             value={password}
@@ -56,17 +60,24 @@ export default function LoginPage() {
           />
         </div>
 
-        {error && <p className="text-sm text-red-500">{error}</p>}
+        {error && (
+          <div className="flex items-start gap-2 rounded-lg border border-danger/30 bg-red-50 p-3" role="alert">
+            <span className="mt-0.5 text-danger">⚠</span>
+            <p className="text-sm text-danger">{error}</p>
+          </div>
+        )}
 
         <button
           type="submit"
-          className="w-full rounded-lg bg-accent px-6 py-3 font-semibold text-white"
+          disabled={loading}
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          Se connecter
+          {loading && <Spinner />}
+          {loading ? "Connexion..." : "Se connecter"}
         </button>
       </form>
 
-      <p className="text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-text-muted">
         Pas encore de compte ?{" "}
         <Link href="/auth/register" className="text-accent underline">
           Créer un compte

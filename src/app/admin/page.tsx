@@ -37,15 +37,15 @@ export default async function AdminPage() {
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="rounded-lg border border-border bg-white p-6">
-          <p className="text-sm text-gray-500">Commandes</p>
+          <p className="text-sm text-text-muted">Commandes</p>
           <p className="text-3xl font-bold text-primary">{ordersCount ?? 0}</p>
         </div>
         <div className="rounded-lg border border-border bg-white p-6">
-          <p className="text-sm text-gray-500">Produits actifs</p>
+          <p className="text-sm text-text-muted">Produits actifs</p>
           <p className="text-3xl font-bold text-primary">{productsCount ?? 0}</p>
         </div>
         <div className="rounded-lg border border-border bg-white p-6">
-          <p className="text-sm text-gray-500">Revenu total</p>
+          <p className="text-sm text-text-muted">Revenu total</p>
           <p className="text-3xl font-bold text-accent">
             {totalRevenue.toLocaleString()} FCFA
           </p>

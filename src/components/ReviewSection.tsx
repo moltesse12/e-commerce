@@ -3,6 +3,8 @@ import type { Review } from "@/lib/types";
 
 interface Props {
   productId: string;
+  userHeight?: number | null;
+  userWeight?: number | null;
 }
 
 async function getReviews(productId: string): Promise<Review[]> {
@@ -30,14 +32,14 @@ function getMorphoTag(
   return null;
 }
 
-export async function ReviewSection({ productId }: Props) {
+export async function ReviewSection({ productId, userHeight, userWeight }: Props) {
   const reviews = await getReviews(productId);
 
   if (reviews.length === 0) {
     return (
       <section className="mt-12">
         <h2 className="text-lg font-semibold text-primary">Avis</h2>
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-text-muted">
           Aucun avis pour le moment. Soyez le premier à donner votre avis !
         </p>
       </section>
@@ -51,14 +53,14 @@ export async function ReviewSection({ productId }: Props) {
     <section className="mt-12">
       <div className="flex items-baseline gap-4">
         <h2 className="text-lg font-semibold text-primary">Avis</h2>
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-text-muted">
           {avgRating.toFixed(1)}/5 &bull; {reviews.length} avis
         </span>
       </div>
 
       <div className="mt-4 space-y-4">
         {reviews.map((r) => {
-          const tag = getMorphoTag(r, null, null);
+          const tag = getMorphoTag(r, userHeight ?? null, userWeight ?? null);
           return (
             <div key={r.id} className="rounded-lg border border-border bg-white p-4">
               <div className="flex items-center justify-between">
@@ -67,13 +69,13 @@ export async function ReviewSection({ productId }: Props) {
                   {"☆".repeat(5 - r.rating)}
                 </span>
                 {tag && (
-                  <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
+                  <span className="rounded-full bg-info/20 px-2 py-0.5 text-xs text-info">
                     {tag}
                   </span>
                 )}
               </div>
               {r.fit_rating && (
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-text-muted">
                   Ajustement :{" "}
                   {r.fit_rating === "true"
                     ? "Taille parfaite"
@@ -83,10 +85,10 @@ export async function ReviewSection({ productId }: Props) {
                 </p>
               )}
               {r.comment && (
-                <p className="mt-2 text-sm text-gray-600">{r.comment}</p>
+                <p className="mt-2 text-sm text-text">{r.comment}</p>
               )}
               {r.reviewer_height_cm && (
-                <p className="mt-1 text-xs text-gray-400">
+                <p className="mt-1 text-xs text-text-muted">
                   {r.reviewer_height_cm} cm
                   {r.reviewer_weight_kg && ` / ${r.reviewer_weight_kg} kg`}
                 </p>

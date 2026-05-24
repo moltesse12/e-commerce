@@ -40,7 +40,7 @@ export function AddToCartButton({ variants, productId, productName, price }: Pro
     <div className="space-y-4">
       {variants.length > 0 && (
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-text">
             Taille
           </label>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -53,6 +53,8 @@ export function AddToCartButton({ variants, productId, productName, price }: Pro
                     ? "border-accent bg-accent text-white"
                     : "border-border"
                 }`}
+                aria-label={`Sélectionner taille ${v.size_label}${v.stock === 0 ? " (rupture de stock)" : ""}`}
+                aria-pressed={selected === v.size_label}
               >
                 {v.size_label}
                 {v.stock === 0 && (

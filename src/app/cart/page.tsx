@@ -44,7 +44,7 @@ export default function CartPage() {
           >
             <div>
               <p className="font-medium text-primary">{item.name}</p>
-              <p className="text-sm text-gray-500">Taille : {item.sizeLabel}</p>
+              <p className="text-sm text-text-muted">Taille : {item.sizeLabel}</p>
               <p className="text-sm font-semibold text-accent">
                 {item.price.toLocaleString()} FCFA
               </p>
@@ -56,16 +56,18 @@ export default function CartPage() {
                   refresh();
                 }}
                 className="rounded border border-border px-2 py-1 text-sm"
+                aria-label={`Diminuer quantité de ${item.name}`}
               >
                 -
               </button>
-              <span className="w-6 text-center text-sm">{item.quantity}</span>
+              <span className="w-6 text-center text-sm" aria-live="polite">{item.quantity}</span>
               <button
                 onClick={() => {
                   updateQuantity(item.variantId, 1);
                   refresh();
                 }}
                 className="rounded border border-border px-2 py-1 text-sm"
+                aria-label={`Augmenter quantité de ${item.name}`}
               >
                 +
               </button>
@@ -75,6 +77,7 @@ export default function CartPage() {
                   refresh();
                 }}
                 className="ml-2 text-sm text-red-500"
+                aria-label={`Supprimer ${item.name} du panier`}
               >
                 Supprimer
               </button>

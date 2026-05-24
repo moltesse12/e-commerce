@@ -35,13 +35,13 @@ export default async function AccountPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-primary">Mon compte</h1>
         <form action="/account/logout" method="post">
-          <button className="text-sm text-gray-500 underline">D&eacute;connexion</button>
+          <button className="text-sm text-text-muted underline">D&eacute;connexion</button>
         </form>
       </div>
 
       <section className="rounded-lg border border-border bg-white p-6">
         <h2 className="text-lg font-semibold text-primary">Profil</h2>
-        <div className="mt-4 space-y-2 text-sm text-gray-600">
+        <div className="mt-4 space-y-2 text-sm text-text">
           <p><span className="font-medium">Nom :</span> {profile?.full_name ?? "—"}</p>
           <p><span className="font-medium">Email :</span> {user.email}</p>
           <p><span className="font-medium">Pays :</span> {profile?.country?.toUpperCase() ?? "SN"}</p>
@@ -51,7 +51,7 @@ export default async function AccountPage() {
       <section className="rounded-lg border border-border bg-white p-6">
         <h2 className="text-lg font-semibold text-primary">Mesures morphologiques</h2>
         {measurements ? (
-          <div className="mt-4 grid grid-cols-2 gap-2 text-sm text-gray-600">
+          <div className="mt-4 grid grid-cols-2 gap-2 text-sm text-text">
             <p>Taille : {measurements.height_cm} cm</p>
             <p>Poids : {measurements.weight_kg} kg</p>
             <p>Tour poitrine : {measurements.chest_cm} cm</p>
@@ -79,7 +79,7 @@ export default async function AccountPage() {
                   <p className="font-medium text-primary">
                     {o.total_cfa.toLocaleString()} FCFA
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-text-muted">
                     {new Date(o.created_at).toLocaleDateString("fr-FR")}
                   </p>
                 </div>
@@ -96,7 +96,7 @@ export default async function AccountPage() {
             ))}
           </div>
         ) : (
-          <p className="mt-2 text-sm text-gray-500">Aucune commande pour le moment.</p>
+          <p className="mt-2 text-sm text-text-muted">Aucune commande pour le moment.</p>
         )}
       </section>
 

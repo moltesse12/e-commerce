@@ -72,7 +72,7 @@ export default function CheckoutPage() {
         <h2 className="font-semibold text-primary">Livraison</h2>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Nom complet</label>
+          <label className="block text-sm font-medium text-text">Nom complet</label>
           <input
             type="text"
             value={name}
@@ -83,7 +83,7 @@ export default function CheckoutPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Téléphone</label>
+          <label className="block text-sm font-medium text-text">Téléphone</label>
           <input
             type="tel"
             value={phone}
@@ -95,7 +95,7 @@ export default function CheckoutPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Ville</label>
+          <label className="block text-sm font-medium text-text">Ville</label>
           <input
             type="text"
             value={city}
@@ -106,7 +106,7 @@ export default function CheckoutPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Adresse</label>
+          <label className="block text-sm font-medium text-text">Adresse</label>
           <textarea
             value={address}
             onChange={(e) => setAddress(e.target.value)}
@@ -116,7 +116,12 @@ export default function CheckoutPage() {
           />
         </div>
 
-        {error && <p className="text-sm text-red-500">{error}</p>}
+        {error && (
+          <div className="flex items-start gap-2 rounded-lg border border-danger/30 bg-red-50 p-3" role="alert">
+            <span className="mt-0.5 text-danger">⚠</span>
+            <p className="text-sm text-danger">{error}</p>
+          </div>
+        )}
 
         <button
           type="submit"

@@ -86,11 +86,13 @@ export default async function ProductPage({
 
   return (
     <div className="grid gap-12 md:grid-cols-2">
-      <div className="aspect-square rounded-lg bg-gray-100" />
+      <div className="flex aspect-square items-center justify-center rounded-lg bg-gradient-to-br from-primary to-[#2a2a4e] text-5xl font-bold text-white/70">
+        {product.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}
+      </div>
 
       <div className="space-y-6">
         <div>
-          <p className="text-sm text-gray-500">{product.category?.name}</p>
+          <p className="text-sm text-text-muted">{product.category?.name}</p>
           <h1 className="text-2xl font-bold text-primary">{product.name}</h1>
           <p className="mt-2 text-2xl font-semibold text-accent">
             {product.base_price.toLocaleString()} FCFA
@@ -98,7 +100,7 @@ export default async function ProductPage({
         </div>
 
         {product.description && (
-          <p className="text-gray-600">{product.description}</p>
+          <p className="text-text">{product.description}</p>
         )}
 
         {match && (
@@ -122,7 +124,7 @@ export default async function ProductPage({
         <div className="rounded-lg border border-border bg-white p-4">
           <h3 className="text-sm font-semibold text-primary">Guide des tailles</h3>
           <div className="mt-3 overflow-x-auto">
-            <table className="w-full text-left text-xs text-gray-600">
+            <table className="w-full text-left text-xs text-text">
               <thead>
                 <tr className="border-b border-border">
                   <th className="pb-2 pr-4 font-medium">Taille</th>
@@ -153,7 +155,11 @@ export default async function ProductPage({
       </div>
 
       <div className="md:col-span-2">
-        <ReviewSection productId={product.id} />
+        <ReviewSection
+          productId={product.id}
+          userHeight={measurements?.height_cm}
+          userWeight={measurements?.weight_kg}
+        />
       </div>
     </div>
   );

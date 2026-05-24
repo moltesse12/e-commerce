@@ -23,7 +23,8 @@ export default async function AdminOrdersPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-primary">Commandes</h1>
-      <table className="w-full text-left text-sm">
+      <div className="overflow-x-auto">
+      <table className="w-full text-left text-sm" role="table">
         <thead>
           <tr className="border-b border-border">
             <th className="pb-3 pr-4 font-medium">Client</th>
@@ -39,14 +40,15 @@ export default async function AdminOrdersPage() {
               <td className="py-3 pr-4">{o.shipping_name}</td>
               <td className="py-3 pr-4">{o.total_cfa.toLocaleString()} FCFA</td>
               <td className="py-3 pr-4"><OrderStatusBadge status={o.status} /></td>
-              <td className="py-3 pr-4 text-xs text-gray-500">{o.payment_method ?? "—"}</td>
-              <td className="py-3 text-xs text-gray-500">
+              <td className="py-3 pr-4 text-xs text-text-muted">{o.payment_method ?? "—"}</td>
+              <td className="py-3 text-xs text-text-muted">
                 {new Date(o.created_at).toLocaleDateString("fr-FR")}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 interface CartItem {
   variantId: string;
@@ -10,6 +11,12 @@ interface CartItem {
 }
 
 export async function POST(request: Request) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user?.email) {
+    return NextResponse.json({ error: "Vous devez être connecté pour payer" }, { status: 401 });
+  }
+
   const { name, phone, city, address, items, total } = await request.json() as {
     name: string;
     phone: string;
@@ -28,7 +35,7 @@ export async function POST(request: Request) {
     redirect_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/checkout/success`,
     customer: {
       name,
-      email: "client@email.com",
+      email: user.email,
       phonenumber: phone,
     },
     meta: {

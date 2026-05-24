@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getServiceClient } from "@/lib/supabase/service";
 
 export async function POST(request: Request) {
   const secret = process.env.FLW_WEBHOOK_SECRET;
-  const signature = request.headers.get("verif-hash");
 
-  if (secret && signature !== secret) {
+  if (!secret) {
+    console.error("Webhook: FLW_WEBHOOK_SECRET not configured");
+    return NextResponse.json({ error: "webhook not configured" }, { status: 500 });
+  }
+
+  const signature = request.headers.get("verif-hash");
+  if (signature !== secret) {
     return NextResponse.json({ error: "invalid signature" }, { status: 401 });
   }
 
@@ -14,12 +19,10 @@ export async function POST(request: Request) {
   if (payload.event === "charge.completed" && payload.data?.status === "successful") {
     const txRef = payload.data.tx_ref;
     const flwId = payload.data.id;
-    const amount = payload.data.amount;
-    const currency = payload.data.currency;
     const paymentMethod = payload.data.payment_type;
 
     try {
-      const supabase = await createClient();
+      const supabase = getServiceClient();
 
       const { data: order } = await supabase
         .from("orders")

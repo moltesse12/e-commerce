@@ -47,7 +47,7 @@ export function CheckoutSuccessInner() {
   if (status === "verifying") {
     return (
       <div className="py-20 text-center">
-        <p className="text-gray-500">Vérification du paiement...</p>
+        <p className="text-text-muted">Vérification du paiement...</p>
       </div>
     );
   }
@@ -56,7 +56,7 @@ export function CheckoutSuccessInner() {
     return (
       <div className="py-20 text-center">
         <h1 className="text-2xl font-bold text-red-500">Erreur</h1>
-        <p className="mt-2 text-gray-600">
+        <p className="mt-2 text-text">
           Une erreur est survenue. Contactez-nous avec la réf. {txRef}.
         </p>
         <Link href="/" className="mt-4 inline-block text-accent underline">
@@ -68,20 +68,35 @@ export function CheckoutSuccessInner() {
 
   return (
     <div className="py-20 text-center">
-      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-2xl">
-        ✓
+      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-2xl" role="status">
+        <span className="text-green-700">✓</span>
       </div>
-      <h1 className="text-2xl font-bold text-primary">Paiement confirmé !</h1>
-      <p className="mt-2 text-gray-600">
-        Merci pour votre commande. Vous recevrez une confirmation par email.
-      </p>
-      <p className="mt-1 text-sm text-gray-500">Réf. {txRef}</p>
-      <Link
-        href="/account"
-        className="mt-6 inline-block rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white"
-      >
-        Voir mes commandes
-      </Link>
+      <h1 className="text-2xl font-bold text-primary">Commande confirmée !</h1>
+        <p className="mt-2 text-text">
+          Merci pour votre commande. Vous recevrez une confirmation par email sous quelques minutes.
+        </p>
+        <div className="mx-auto mt-6 max-w-sm rounded-lg border border-info/20 bg-info/10 p-4 text-left text-sm text-text">
+        <p className="font-medium text-info">Notre promesse ajustement</p>
+        <p className="mt-1">
+          Nous vérifierons que la taille recommandée correspond à votre morphologie.
+          Si l&apos;écart est trop grand, nous vous contacterons avant expédition.
+        </p>
+      </div>
+      <p className="mt-4 text-sm text-text-muted">Réf. {txRef}</p>
+      <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+        <Link
+          href="/account"
+          className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white"
+        >
+          Voir mes commandes
+        </Link>
+        <Link
+          href="/account"
+          className="text-sm font-medium text-accent underline"
+        >
+          Vérifier ma recommandation taille
+        </Link>
+      </div>
     </div>
   );
 }
