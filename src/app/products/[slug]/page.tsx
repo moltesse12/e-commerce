@@ -1,10 +1,35 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
 import { createClient } from "@/lib/supabase/server";
 import { findBestSize } from "@/lib/matching";
 import type { Product, ProductVariant } from "@/lib/types";
 import { AddToCartButton } from "./add-to-cart-button";
 import { ReviewSection } from "@/components/ReviewSection";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const { data: product } = await supabase
+    .from("products")
+    .select("name, description")
+    .eq("slug", slug)
+    .single();
+
+  if (!product) return { title: "Produit introuvable" };
+
+  return {
+    title: `${product.name} — MORPHO`,
+    description: product.description ?? "Vêtement adapté à votre morphologie",
+    openGraph: {
+      title: product.name,
+      description: product.description ?? undefined,
+    },
+  };
+}
 
 async function getProduct(slug: string) {
   const { data: product } = await supabase

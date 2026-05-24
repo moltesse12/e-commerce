@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
 import { ProductCard } from "@/components/ProductCard";
 import type { Product } from "@/lib/types";
+
+export const metadata: Metadata = {
+  title: "Catalogue — MORPHO",
+  description: "Vêtements et chaussures adaptés à votre morphologie",
+};
 
 async function getProducts(): Promise<Product[]> {
   const { data } = await supabase
