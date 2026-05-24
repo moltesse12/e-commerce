@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { findBestSize } from "@/lib/matching";
 import type { Product, ProductVariant } from "@/lib/types";
 import { AddToCartButton } from "./add-to-cart-button";
+import { ReviewSection } from "@/components/ReviewSection";
 
 async function getProduct(slug: string) {
   const { data: product } = await supabase
@@ -124,6 +125,10 @@ export default async function ProductPage({
             </table>
           </div>
         </div>
+      </div>
+
+      <div className="md:col-span-2">
+        <ReviewSection productId={product.id} />
       </div>
     </div>
   );
