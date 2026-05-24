@@ -2,8 +2,13 @@ import { redirect } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import { AdminPagination } from "@/components/AdminPagination";
 
-export default async function AdminProductsPage() {
+const PAGE_SIZE = 20;
+
+export default async function AdminProductsPage(props: { searchParams: Promise<{ page?: string }> }) {
+  const searchParams = await props.searchParams;
+  const page = Math.max(1, Number(searchParams.page) || 1);
   const supabaseServer = await createClient();
   const { data: { user } } = await supabaseServer.auth.getUser();
   if (!user) redirect("/auth/login");
@@ -16,10 +21,20 @@ export default async function AdminProductsPage() {
 
   if (!profile?.is_admin) redirect("/");
 
+  const from = (page - 1) * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+
+  const { count } = await supabase
+    .from("products")
+    .select("*", { count: "exact", head: true });
+
   const { data: products } = await supabase
     .from("products")
     .select("*, category:categories(name)")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
+  const totalPages = Math.ceil((count ?? 0) / PAGE_SIZE);
 
   return (
     <div className="space-y-6">
@@ -48,6 +63,7 @@ export default async function AdminProductsPage() {
         </tbody>
       </table>
       </div>
+      <AdminPagination currentPage={page} totalPages={totalPages} basePath="/admin/products" />
     </div>
   );
 }

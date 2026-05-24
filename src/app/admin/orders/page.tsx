@@ -1,8 +1,13 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { OrderStatusBadge } from "./status-badge";
+import { AdminPagination } from "@/components/AdminPagination";
 
-export default async function AdminOrdersPage() {
+const PAGE_SIZE = 20;
+
+export default async function AdminOrdersPage(props: { searchParams: Promise<{ page?: string }> }) {
+  const searchParams = await props.searchParams;
+  const page = Math.max(1, Number(searchParams.page) || 1);
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
@@ -15,10 +20,20 @@ export default async function AdminOrdersPage() {
 
   if (!profile?.is_admin) redirect("/");
 
+  const from = (page - 1) * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+
+  const { count } = await supabase
+    .from("orders")
+    .select("*", { count: "exact", head: true });
+
   const { data: orders } = await supabase
     .from("orders")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
+  const totalPages = Math.ceil((count ?? 0) / PAGE_SIZE);
 
   return (
     <div className="space-y-6">
@@ -49,6 +64,7 @@ export default async function AdminOrdersPage() {
         </tbody>
       </table>
       </div>
+      <AdminPagination currentPage={page} totalPages={totalPages} basePath="/admin/orders" />
     </div>
   );
 }
